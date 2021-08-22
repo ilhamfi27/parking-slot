@@ -40,11 +40,11 @@ describe('Parking Slot', () => {
     });
   });
 
-  describe('/GET parking-slot/park/:slot', () => {
+  describe('/DELETE parking-slot/park/:slot', () => {
     it('should tell if the slot already empty if the slot is empty', (done) => {
       chai
         .request(app)
-        .get('/parking-slot/park/b1-1')
+        .delete('/parking-slot/park/b1-1')
         .end((err: any, res: any) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -58,7 +58,7 @@ describe('Parking Slot', () => {
 
       chai
         .request(app)
-        .get('/parking-slot/park/b1-1')
+        .delete('/parking-slot/park/b1-1')
         .end((err: any, res: any) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -70,7 +70,7 @@ describe('Parking Slot', () => {
     it("should tell if there's no level 10 and slot 100", (done) => {
       chai
         .request(app)
-        .get('/parking-slot/park/b10-100')
+        .delete('/parking-slot/park/b10-100')
         .end((err: any, res: any) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
