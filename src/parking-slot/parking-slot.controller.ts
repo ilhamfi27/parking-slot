@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import ParkingSlotModel from './parking-slot.service';
+import ParkingSlotService from './parking-slot.service';
 
-const parkingSLot = new ParkingSlotModel();
+const parkingSLot = new ParkingSlotService();
 
 export const park = (req: Request, res: Response) => {
   const response = parkingSLot.store();

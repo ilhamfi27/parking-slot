@@ -1,19 +1,12 @@
-class ParkingSlotModel {
-  private _parkingSlot: any = {
-    b1: new Array<boolean>(10),
-    b2: new Array<boolean>(12),
-    b3: new Array<boolean>(14),
-    b4: new Array<boolean>(16),
-  };
+import { ParkingSlot } from './parking-slot.model';
 
-  constructor() {
-    this._initSlotValue();
-  }
+class ParkingSlotService {
+  constructor() {}
 
   store() {
-    for (const level in this._parkingSlot) {
+    for (const level in ParkingSlot) {
       // get level slot array
-      const levelSlot = this._parkingSlot[level];
+      const levelSlot = ParkingSlot[level];
 
       // get index in level slot if the slot is false or empty
       const idx = levelSlot.indexOf(false);
@@ -22,7 +15,7 @@ class ParkingSlotModel {
         // if idx return more than -1 or its data was found
         // then set true for selected slot
         levelSlot[idx] = true;
-        this._parkingSlot[level] = levelSlot;
+        ParkingSlot[level] = levelSlot;
 
         return { level: level, slot: idx + 1 };
       }
@@ -33,7 +26,7 @@ class ParkingSlotModel {
 
   delete({ level, slot }: { level: string; slot: number }) {
     // get level slot aray
-    const levelSlot = this._parkingSlot[level];
+    const levelSlot = ParkingSlot[level];
 
     // check if slot number or level of slot is out of bounds
     if (levelSlot === undefined || levelSlot[slot - 1] === undefined) {
@@ -47,28 +40,9 @@ class ParkingSlotModel {
 
     // set empty
     levelSlot[slot - 1] = false;
-    this._parkingSlot[level] = levelSlot;
+    ParkingSlot[level] = levelSlot;
 
     return { message: 'slot emptied' };
   }
-
-  setEmpty() {
-    this._initSlotValue();
-  }
-
-  private _initSlotValue(): void {
-    /**
-     * initiating all slot value as false or it means empty
-     */
-    for (const key in this._parkingSlot) {
-      const levelSlot = this._parkingSlot[key];
-
-      for (let i = 0; i < levelSlot.length; i++) {
-        levelSlot[i] = false;
-      }
-
-      this._parkingSlot[key] = levelSlot;
-    }
-  }
 }
-export default ParkingSlotModel;
+export default ParkingSlotService;
