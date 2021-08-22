@@ -1,0 +1,37 @@
+{
+  "name": "productzilla-interview",
+  "version": "1.0.0",
+  "description": "Productzilla interview code",
+  "main": "server.js",
+  "scripts": {
+    "start": "ts-node ./src/server.ts",
+    "start:prod": "node ./dist/src/server.js",
+    "start:dev": "nodemon",
+    "build": "npx tsc",
+    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register src/**/*.test.ts"
+  },
+  "author": "Raden Ilham Fadhilah",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.2.21",
+    "@types/express": "^4.17.13",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.6.2",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
+    "chai": "^4.3.4",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "mocha": "^9.1.0",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "chai-http": "^4.3.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.7"
+  }
+}
