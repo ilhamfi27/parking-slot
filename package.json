@@ -4,8 +4,8 @@
   "description": "Productzilla interview code",
   "main": "server.js",
   "scripts": {
-    "start": "ts-node ./src/server.ts",
-    "start:prod": "node ./dist/src/server.js",
+    "start": "ts-node ./server.ts",
+    "start:prod": "node ./dist/server.js",
     "start:dev": "nodemon",
     "build": "npx tsc",
     "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register src/**/*.test.ts"
@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "chai-http": "^4.3.0",
-    "express": "^4.17.1",
-    "mongoose": "^5.13.7"
+    "express": "^4.17.1"
   }
 }
