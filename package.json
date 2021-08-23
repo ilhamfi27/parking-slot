@@ -8,7 +8,7 @@
     "start:prod": "node ./dist/server.js",
     "start:dev": "nodemon",
     "build": "npx tsc",
-    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register src/**/*.test.ts",
+    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register --timeout 30000 src/**/*.test.ts",
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\""
   },
   "author": "Raden Ilham Fadhilah",
@@ -35,9 +35,14 @@
     "typescript": "^3.3.3333"
   },
   "dependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/register": "^7.15.3",
     "@prisma/client": "^2.29.1",
     "body-parser": "^1.19.0",
     "chai-http": "^4.3.0",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",

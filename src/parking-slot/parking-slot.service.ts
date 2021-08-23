@@ -1,10 +1,32 @@
-import { Request, Response } from 'express';
 import { InputParkingSlotDto } from './dto/input.dto';
 import { PrismaClient, Prisma } from '@prisma/client';
+import { validate } from 'class-validator';
+import { plainToClass } from 'class-transformer';
 
 const prisma = new PrismaClient();
 
-export const store = async (body: InputParkingSlotDto) => {
+interface ServiceResponse {
+  data?: any;
+  message?: any;
+  errors?: any;
+  httpStatus: number;
+}
+
+export const store = async (
+  body: InputParkingSlotDto
+): Promise<ServiceResponse> => {
+  // validate body request
+  try {
+    const customerData = plainToClass(InputParkingSlotDto, body);
+    const errors = await validate(customerData);
+    if (errors.length > 0) {
+      return {
+        errors: errors,
+        httpStatus: 400,
+      };
+    }
+  } catch (error) {}
+
   // select all parking level
   const parkingLevel = await prisma.parkingLevel.findMany({});
 
@@ -42,38 +64,58 @@ export const store = async (body: InputParkingSlotDto) => {
             parkingLevelId: level.id,
           },
         });
-        return { level: level.id, slot: emptySlot };
+
+        return { data: { level: level.id, slot: emptySlot }, httpStatus: 200 };
       } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
           // duplicate unique constraint error
           if (e.code === 'P2002') {
-            return { message: 'the car number already exist in parking slot' };
+            return {
+              message: 'the car number already exist in parking slot',
+              httpStatus: 400,
+            };
           }
         }
       }
     }
   }
-  return { message: 'slots are full' };
+
+  return { message: 'slots are full', httpStatus: 400 };
 };
 
-export const remove = async (body: InputParkingSlotDto) => {
+export const remove = async (
+  body: InputParkingSlotDto
+): Promise<ServiceResponse> => {
   try {
+    // validate body request
+    const customerData = plainToClass(InputParkingSlotDto, body);
+    const errors = await validate(customerData);
+    if (errors.length > 0) {
+      return {
+        errors: errors,
+        httpStatus: 400,
+      };
+    }
+
     await prisma.parkingSlot.delete({
       where: {
         ...body,
       },
     });
-    return { message: 'slot emptied' };
+    return { message: 'slot emptied', httpStatus: 200 };
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       // no data error code
       if (e.code === 'P2025') {
         return {
           message: 'the car number does not exists in this parking slot',
+          httpStatus: 400,
         };
       }
     }
   }
+
+  return { message: 'slot emptied', httpStatus: 200 };
 };
 
 const getOneEmptySlot = (existing: any, maxSlot: number) => {
