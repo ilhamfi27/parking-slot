@@ -1,25 +1,24 @@
-## stage one or build step
-FROM node:14.17-alpine3.14
+FROM node:14 AS builder
 
-WORKDIR /usr/src/app
+# Create app directory
+WORKDIR /app
 
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
+COPY prisma ./prisma/
+
+# Install app dependencies
+RUN npm install
 
 COPY . .
 
-RUN npm install
 RUN npm run build
 
-## stage two or run step
+FROM node:14
 
-FROM node:14.17-alpine3.14
-
-COPY package*.json ./
-
-RUN npm install --only=production
-
-COPY --from=0 /usr/src/app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
-
-CMD ["npm", "run", "start:prod"]
+CMD [ "npm", "run", "start:prod" ]
