@@ -1,48 +1,59 @@
-import { ParkingSlot } from './parking-slot.model';
+import { Request, Response } from 'express';
+import { InputParkingSlotDto } from './dto/input.dto';
+import { PrismaClient } from '@prisma/client';
 
-class ParkingSlotService {
-  constructor() {}
+const prisma = new PrismaClient();
 
-  store() {
-    for (const level in ParkingSlot) {
-      // get level slot array
-      const levelSlot = ParkingSlot[level];
+export const store = async (body: InputParkingSlotDto) => {
+  // select all parking level
+  const parkingLevel = await prisma.parkingLevel.findMany({});
 
-      // get index in level slot if the slot is false or empty
-      const idx = levelSlot.indexOf(false);
+  // iterate parking level to check availability
+  for (let i = 0; i < parkingLevel.length; i++) {
+    const level = parkingLevel[i];
 
-      if (idx > -1) {
-        // if idx return more than -1 or its data was found
-        // then set true for selected slot
-        levelSlot[idx] = true;
-        ParkingSlot[level] = levelSlot;
+    // get level slot count
+    const levelSlotCount = await prisma.parkingSlot.aggregate({
+      where: { parkingLevelId: level.id },
+      _count: {
+        parkingLevelId: true,
+      },
+    });
 
-        return { level: level, slot: idx + 1 };
-      }
+    /**
+     * if the level slot available count is above maximum level slot
+     * then insert the new customer to the slot
+     */
+    if (levelSlotCount._count.parkingLevelId < level.max_slot) {
+      // get parking slot
+      const existingParkingSlot = await prisma.parkingSlot.findMany({
+        where: { parkingLevelId: level.id },
+      });
+
+      // get one empty slot on current level
+      const emptySlot = getOneEmptySlot(existingParkingSlot, level.max_slot);
+
+      // insert the data
+      await prisma.parkingSlot.create({
+        data: {
+          ...body,
+          slot: emptySlot,
+          parkingLevelId: level.id,
+        },
+      });
+      return { level: level.id, slot: emptySlot };
     }
-
-    return { message: 'slots are full' };
   }
+  return { message: 'slots are full' };
+};
 
-  delete({ level, slot }: { level: string; slot: number }) {
-    // get level slot aray
-    const levelSlot = ParkingSlot[level];
+export const remove = ({ level, slot }: { level: string; slot: number }) => {};
 
-    // check if slot number or level of slot is out of bounds
-    if (levelSlot === undefined || levelSlot[slot - 1] === undefined) {
-      return { message: `no slot for level ${level} and slot number ${slot}` };
-    }
+const getOneEmptySlot = (existing: any, maxSlot: number) => {
+  // create array from 1 to maximum level slot
+  const availableSlot = Array.from({ length: maxSlot }, (_, i) => i + 1);
+  const existingSlot = existing.map((el: any) => el.slot);
 
-    // just for checking if the slot is already empty
-    if (levelSlot[slot - 1] === false) {
-      return { message: 'slot already empty' };
-    }
-
-    // set empty
-    levelSlot[slot - 1] = false;
-    ParkingSlot[level] = levelSlot;
-
-    return { message: 'slot emptied' };
-  }
-}
-export default ParkingSlotService;
+  // filter the slot number where the number not in existing slot
+  return availableSlot.filter((el) => !existingSlot.includes(el))[0];
+};

@@ -1,0 +1,23 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model ParkingLevel {
+    id       Int           @id @default(autoincrement())
+    level    String        @unique
+    max_slot Int
+    slot     ParkingSlot[]
+}
+
+model ParkingSlot {
+    id             Int           @id @default(autoincrement())
+    slot           Int
+    car_number     String        @db.VarChar(12)
+    ParkingLevel   ParkingLevel? @relation(fields: [parkingLevelId], references: [id])
+    parkingLevelId Int?
+}

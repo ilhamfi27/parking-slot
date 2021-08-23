@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
-import ParkingSlotService from './parking-slot.service';
+import { store, remove } from './parking-slot.service';
 
-const parkingSLot = new ParkingSlotService();
-
-export const park = (req: Request, res: Response) => {
-  const response = parkingSLot.store();
+export const park = async (req: Request, res: Response) => {
+  const body = req.body;
+  const response = await store(body);
 
   res.json(response);
 };
@@ -16,6 +15,6 @@ export const leave = (req: Request, res: Response) => {
     slot: Number(levelAndSlot[1]),
   };
 
-  const respone = parkingSLot.delete(customerSlot);
+  const respone = remove(customerSlot);
   res.json(respone);
 };
