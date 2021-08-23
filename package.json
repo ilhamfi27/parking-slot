@@ -4,9 +4,9 @@
   "description": "Productzilla interview code",
   "main": "server.js",
   "scripts": {
-    "start": "ts-node ./server.ts",
-    "start:prod": "node ./dist/server.js",
-    "start:dev": "nodemon",
+    "start": "ts-node server.ts",
+    "start:prod": "node dist/server.js",
+    "start:dev": "nodemon --legacy-watch",
     "build": "npx tsc",
     "test": "cross-env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register --timeout 30000 src/**/*.test.ts",
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\""

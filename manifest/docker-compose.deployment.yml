@@ -39,10 +39,11 @@ services:
   web:
     build:
       context: .
-    command: npm run start:dev
-    env_file: .env
+      dockerfile: ../Dockerfile
+    env_file: .env.production
     volumes:
-      - ./:/app
+      - .:/app
+      - /app/node_modules
     ports:
       - '8080:3000'
     expose:
