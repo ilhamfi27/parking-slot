@@ -39,6 +39,7 @@ services:
   web:
     build:
       context: .
+    container_name: parking_slot-web
     command: npm run start:dev
     env_file: .env
     volumes:
