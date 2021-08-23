@@ -20,7 +20,7 @@ describe('Parking Slot', () => {
       chai
         .request(app)
         .post('/parking-slot/park')
-        .send({ car_number: 'd 1234 ab' })
+        .send({ car_number: 'D 1234 AB' })
         .end((err: any, res: any) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -36,7 +36,7 @@ describe('Parking Slot', () => {
         chai
           .request(app)
           .post('/parking-slot/park')
-          .send({ car_number: 'd 9999 ab' })
+          .send({ car_number: 'D 9999 AB' })
           .end((err: any, res: any) => {
             res.should.have.status(400);
             res.body.should.be.a('object');
@@ -84,7 +84,7 @@ describe('Parking Slot', () => {
         chai
           .request(app)
           .post('/parking-slot/leave')
-          .send({ car_number: 'D 1251 TST' })
+          .send({ car_number: 'D 9999 TST' })
           .end((err: any, res: any) => {
             res.should.have.status(400);
             res.body.should.be.a('object');
