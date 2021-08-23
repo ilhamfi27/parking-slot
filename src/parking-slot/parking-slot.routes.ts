@@ -3,7 +3,7 @@ import { park, leave } from './parking-slot.controller';
 
 const router = express.Router();
 
-router.get('/park', park);
+router.post('/park', park);
 router.delete('/park/:slot', leave);
 
 export default router;
