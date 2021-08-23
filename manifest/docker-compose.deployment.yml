@@ -39,10 +39,11 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
-    env_file: .env.production
+    container_name: parking_slot-web
+    command: npm run start:prod
+    env_file: ../.env.production
     volumes:
-      - .:/app
+      - ./:/app
       - /app/node_modules
     ports:
       - '8080:3000'

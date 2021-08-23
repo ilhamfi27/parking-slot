@@ -8,16 +8,19 @@
 
 2. `cd parking-slot`
 3. Open your favourite terminal
-4. Run command
+4. Run command for creating your own .env file
+
+   `cp .env.example .env`
+5. Run command for create docker container for development
 
    `docker-compose up -d`
-5. Run command for migrating database
+6. Run command for migrating database
 
    `docker exec -it parking_slot-web npx prisma migrate dev`
-6. Run command for seed data to database
+7. Run command for seed data to database
 
    `docker exec -it parking_slot-web npx prisma db seed --preview-feature`
-7. Ready for development
+8. Ready for development
 
 ## Endpoints
 
