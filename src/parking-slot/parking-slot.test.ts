@@ -45,9 +45,25 @@ describe('Parking Slot', () => {
           });
       });
     });
+
+    it('should give error validation if the input was not string', (done) => {
+      setFull().then(() => {
+        chai
+          .request(app)
+          .post('/parking-slot/park')
+          .send({ car_number: 9999 })
+          .end((err: any, res: any) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+            res.body.should.have.property('errors');
+            res.body.errors.should.be.a('array');
+            done();
+          });
+      });
+    });
   });
 
-  describe('/POST parking-slot/leave/', () => {
+  describe('/POST parking-slot/leave', () => {
     it('should empty the requested slot and tell its emptied', (done) => {
       setFull().then(() => {
         chai
@@ -62,19 +78,38 @@ describe('Parking Slot', () => {
           });
       });
     });
+
     it('should tell if the car is not exists in any slot', (done) => {
-      chai
-        .request(app)
-        .post('/parking-slot/leave')
-        .send({ car_number: 'D 1251 TST' })
-        .end((err: any, res: any) => {
-          res.should.have.status(400);
-          res.body.should.be.a('object');
-          res.body.should.have
-            .property('message')
-            .eql('the car number does not exists in this parking slot');
-          done();
-        });
+      setEmpty().then(() => {
+        chai
+          .request(app)
+          .post('/parking-slot/leave')
+          .send({ car_number: 'D 1251 TST' })
+          .end((err: any, res: any) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+            res.body.should.have
+              .property('message')
+              .eql('the car number does not exists in this parking slot');
+            done();
+          });
+      });
+    });
+
+    it('should give error validation if the input was not string', (done) => {
+      setFull().then(() => {
+        chai
+          .request(app)
+          .post('/parking-slot/leave')
+          .send({ car_number: 9999 })
+          .end((err: any, res: any) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+            res.body.should.have.property('errors');
+            res.body.errors.should.be.a('array');
+            done();
+          });
+      });
     });
   });
 });
