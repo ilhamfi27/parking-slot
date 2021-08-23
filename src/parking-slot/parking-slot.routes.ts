@@ -4,6 +4,6 @@ import { park, leave } from './parking-slot.controller';
 const router = express.Router();
 
 router.post('/park', park);
-router.delete('/park/:slot', leave);
+router.post('/leave', leave);
 
 export default router;

@@ -15,6 +15,7 @@ CREATE TABLE `ParkingSlot` (
     `car_number` VARCHAR(12) NOT NULL,
     `parkingLevelId` INTEGER,
 
+    UNIQUE INDEX `ParkingSlot.car_number_unique`(`car_number`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

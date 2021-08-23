@@ -17,7 +17,7 @@ model ParkingLevel {
 model ParkingSlot {
     id             Int           @id @default(autoincrement())
     slot           Int
-    car_number     String        @db.VarChar(12)
+    car_number     String        @unique @db.VarChar(12)
     ParkingLevel   ParkingLevel? @relation(fields: [parkingLevelId], references: [id])
     parkingLevelId Int?
 }

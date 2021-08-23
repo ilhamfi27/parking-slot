@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { InputParkingSlotDto } from './dto/input.dto';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -33,21 +33,48 @@ export const store = async (body: InputParkingSlotDto) => {
       // get one empty slot on current level
       const emptySlot = getOneEmptySlot(existingParkingSlot, level.max_slot);
 
-      // insert the data
-      await prisma.parkingSlot.create({
-        data: {
-          ...body,
-          slot: emptySlot,
-          parkingLevelId: level.id,
-        },
-      });
-      return { level: level.id, slot: emptySlot };
+      try {
+        // insert the data
+        await prisma.parkingSlot.create({
+          data: {
+            ...body,
+            slot: emptySlot,
+            parkingLevelId: level.id,
+          },
+        });
+        return { level: level.id, slot: emptySlot };
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          // duplicate unique constraint error
+          if (e.code === 'P2002') {
+            return { message: 'the car number already exist in parking slot' };
+          }
+        }
+      }
     }
   }
   return { message: 'slots are full' };
 };
 
-export const remove = ({ level, slot }: { level: string; slot: number }) => {};
+export const remove = async (body: InputParkingSlotDto) => {
+  try {
+    await prisma.parkingSlot.delete({
+      where: {
+        ...body,
+      },
+    });
+    return { message: 'slot emptied' };
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      // no data error code
+      if (e.code === 'P2025') {
+        return {
+          message: 'the car number does not exists in this parking slot',
+        };
+      }
+    }
+  }
+};
 
 const getOneEmptySlot = (existing: any, maxSlot: number) => {
   // create array from 1 to maximum level slot
